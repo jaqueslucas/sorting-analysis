@@ -32,6 +32,24 @@ function insertion<T>(v: T[]): void {
     }
 }
 
+function sort<T>(v:T[]): T[]{
+    if(v.length<2){
+        return v;
+    }
+    let pivot = v[0];
+    let left_array: T[] = new Array<T>();
+    let right_array: T[] = new Array<T>();
+    for(let i = 1; i <v.length; ++i){
+        if (v[i]< pivot)
+            left_array.push(v[i]);
+        if (v[i]>=pivot)
+            right_array.push(v[i]);
+    }        
+    return Array.prototype.concat(sort(left_array), 
+                                  pivot, 
+                                  sort(right_array));
+}
+
 function generateReversedArray(size: number): number[] {
     return Array.from({ length: size }, (_, i) => size - i);
 }
@@ -54,7 +72,8 @@ function runTests() {
         bubbleWorst: [] as number[],
         bubbleAverage: [] as number[],
         insertionWorst: [] as number[],
-        insertionAverage: [] as number[]
+        insertionAverage: [] as number[],
+        quickSortWorst: [] as number[], 
     };
 
     for (const size of sizes) {
@@ -66,6 +85,8 @@ function runTests() {
 
         results.insertionWorst.push(measureTime(insertion, [...reversedArray]));
         results.insertionAverage.push(measureTime(insertion, [...randomArray]));
+
+        results.quickSortWorst.push(measureTime(sort, [...reversedArray]));
     }
 
     console.table(results);
@@ -100,6 +121,14 @@ function runTests() {
                 {
                     label: 'Insertion Sort - Caso Médio',
                     data: results.insertionAverage,
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1,
+                    fill: false
+                },
+
+                {
+                    label: 'Insertion Sort - Caso Médio',
+                    data: results.quickSortWorst,
                     borderColor: 'rgba(153, 102, 255, 1)',
                     borderWidth: 1,
                     fill: false
